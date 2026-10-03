@@ -311,6 +311,13 @@ function loadBaseJson() {
   const dbName = params.get("db") === "basex" ? "basex.json" : "base.json";
   const lookupsName = params.get("db") === "basex" ? "lookupsex.json" : "lookups.json";
 
+  if (dbName === "basex.json") {
+    document.getElementById("headerTitle").textContent = "GHT with Nathan's Greek OT";
+    document.getElementById("otSelect").checked = true;
+  } else {
+    document.getElementById("otSelect").checked = false;
+  }
+
   // If already available (compiled build), skip fetch
   if (typeof baseData !== "undefined" && typeof lookupdb !== "undefined" && dbName !== "basex.json") {
     // Prefer compile-time injected UTC timestamp
@@ -1079,6 +1086,8 @@ function setupEventListeners() {
   document.getElementById("historyForwardBtnRight").addEventListener("click", () => historyNav(1, 1));
   document.getElementById("historyBackBtnLeft").addEventListener("click", () => historyNav(0, -1));
   document.getElementById("historyForwardBtnLeft").addEventListener("click", () => historyNav(0, 1));
+
+  document.getElementById("otSelect").addEventListener("change", toggleOT);
 }
 
 // Fancy Reference Selector Box code.
@@ -2803,7 +2812,11 @@ function renderSingleVerse(container, book, chapter, verse, verseData, options, 
     }
 
     const labelEl = document.createElement("span");
-    labelEl.className = "verse-label";
+    if (book <= 38) {
+      labelEl.className = "verse-label-ot";
+    } else {
+      labelEl.className = "verse-label";
+    }
     labelEl.textContent = displayLabel + ":";
 
     // Make it clickable: on click, put fullLabel in search and trigger search
@@ -5155,7 +5168,7 @@ function copyText(mode) {
   let texts = [];
 
   // include <hr> in traversal
-  output.querySelectorAll(".verse-label, .word .grk, .word .eng, hr.search-separator, .word .compEng, .word .BSB, .word .MSB")
+  output.querySelectorAll(".verse-label, .verse-label-ot, .word .grk, .word .eng, hr.search-separator, .word .compEng, .word .BSB, .word .MSB")
     .forEach(node => {
 
       if (node.tagName === "HR") {
@@ -5163,7 +5176,7 @@ function copyText(mode) {
         return;
       }
 
-      if (node.classList.contains("verse-label")) {
+      if (node.classList.contains("verse-label") || node.classList.contains("verse-label-ot")) {
         texts.push('[' + node.textContent.trim() + ']');
       }
       else if (mode === "grk" && node.classList.contains("grk")) {
@@ -6155,6 +6168,40 @@ async function idbGet(key) {
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
   });
+}
+
+function showOTDisclaimer() {
+  togglePopup("displayPopup");
+
+  modalText.innerHTML =
+    "The Greek text of the Old Testament is translated by Nathan \"Ghukek\" Wiebe and is not produced by or endorsed by Garth Wiebe of the GHT.";
+
+  translationModal.style.display = "block";
+
+  ackButton.onclick = function() {
+    const url = new URL(window.location.href);
+    url.searchParams.set("db", "basex");
+    window.location.href = url.toString();
+  };
+
+  nackButton.onclick = function() {
+    document.getElementById("otSelect").checked = false;
+    translationModal.style.display = "none";
+  };
+}
+
+function toggleOT() {
+  const otSelect = document.getElementById("otSelect");
+
+  if (otSelect.checked) {
+    // Going from unchecked → checked.
+    showOTDisclaimer();
+  } else {
+    // Going from checked → unchecked.
+    const url = new URL(window.location.href);
+    url.searchParams.delete("db");
+    window.location.href = url.toString();
+  }
 }
 
 // Load initial data from server.

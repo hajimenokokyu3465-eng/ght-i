@@ -25,7 +25,7 @@
   --highlight-overlay: rgba(160, 130, 90, 0.20);
 }
 
-.verse-label {
+.verse-label, .verse-label-ot {
   padding: 0;
   font-weight: bold;
   margin: .2em;
@@ -246,7 +246,7 @@ body {
 }
 
 /* Default hover */
-.roots:hover, .pcode:hover, .eng:hover, .BSB:hover, .MSB:hover, .compEng:hover, .compEngR:hover, .compEngL:hover, .grk:hover, .col:hover, .verse-label:hover, #toggleGreekHelp:hover {
+.roots:hover, .pcode:hover, .eng:hover, .BSB:hover, .MSB:hover, .compEng:hover, .compEngR:hover, .compEngL:hover, .grk:hover, .col:hover, .verse-label:hover, #toggleGreekHelp:hover, .verse-label-ot:hover {
   background-color: var(--highlight-overlay);
   box-shadow: 0 0 6px 2px var(--highlight-overlay);
   border-radius: 5px; /* optional, soft corners */
@@ -275,12 +275,16 @@ body {
   margin-bottom: 10px;
 }
 
-.verse-label {
+.verse-label, .verse-label-ot {
   font-weight: bold;
   margin-right: 0.5em;
   align-self: center;
   font-size: var(--font-size-reduced);
   cursor: pointer;
+}
+
+.verse-label-ot {
+  color: rgb(75, 75, 0)
 }
 
 select {

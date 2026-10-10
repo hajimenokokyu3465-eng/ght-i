@@ -930,6 +930,24 @@ function blockSpacesBeforeInput(e) {
 // Called only after baseData is loaded
 function setupEventListeners() {
   if (debugMode) console.log("setupEventListeners()");
+// --- Translation Abbreviations Tooltip & Click Handler ---
+// This automatically finds the translation element in the top right corner
+const translationElement = document.getElementById('translation') || document.querySelector('.translation-selector') || elements?.translation;
+
+if (translationElement) {
+    // 1. Set the hover tooltip text
+    translationElement.title = "Click to view the translation JSON source data";
+
+    // 2. Make it clickable and redirect to the source page
+    translationElement.addEventListener('click', (event) => {
+        event.stopPropagation(); // Prevents application conflicts
+        window.open('/jsonsource.html', '_blank'); // Opens your destination page
+    });
+}
+
+
+}
+
   // Helper for start/end selectors
   const rangeSelectors = [
     { book: "bookStart", chapter: "chapterStart", verse: "verseStart", type: "start" },
